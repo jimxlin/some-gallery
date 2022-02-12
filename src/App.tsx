@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, createContext } from "react";
-import { VStack, Heading, Text, Image } from "@chakra-ui/react";
-import { getPhotoList, getPhoto } from "./api";
+import { VStack, Heading, Text, Image, Link } from "@chakra-ui/react";
+import { getPhotoList, getPhotoSrc } from "./api";
 
 function App() {
   const [photos, setPhotos] = useState<any>([]);
@@ -9,9 +9,9 @@ function App() {
   const [error, setError] = useState<string | undefined>(undefined);
 
   const showPhoto = async (photoKey: string) => {
-    const src = await getPhoto(photoKey);
+    const src = await getPhotoSrc(photoKey);
     setImgSrc(src);
-  }
+  };
 
   const getPhotos = (): void => {
     // https://www.robinwieruch.de/react-hooks-fetch-data/
@@ -35,7 +35,7 @@ function App() {
       {error && <Text color="red.500">{error}</Text>}
       {imgSrc && <Image src={imgSrc} />}
       {photos.map((photo: any) => (
-        <Text key={photo.Key} onClick={() => showPhoto(photo.Key)}>
+        <Text key={photo.Key} onClick={() => showPhoto(photo.Key)} as={Link}>
           {JSON.stringify(photo)}
         </Text>
       ))}
