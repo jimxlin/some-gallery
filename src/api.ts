@@ -4,8 +4,8 @@ import {
   GetObjectCommand,
   GetObjectTaggingCommand,
 } from "@aws-sdk/client-s3";
-
 import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
+import { Photo } from "./types";
 
 const s3Client = new S3Client({
   region: process.env.REACT_APP_AWS_REGION,
@@ -43,17 +43,22 @@ const getPhotoTag = async (key: string) => {
   }, {});
 };
 
-export const getPhotoList = async () => {
+export const getPhotoList = async (): Promise<Array<Photo> | undefined> => {
   const { Contents } = await s3Client.send(
     new ListObjectsV2Command({ Bucket: process.env.REACT_APP_AWS_ACCESS_POINT })
   );
+  if (!Contents) return undefined;
   const contentWithTags = await Promise.all(
     (Contents || []).map(async (obj) => {
-      if (!obj.Key) return obj;
-      const photoTags = await getPhotoTag(obj.Key);
-      if (!photoTags) return obj;
-      return { ...obj, tags: photoTags };
+      const { Key, LastModified, ETag, Size } = obj;
+      if (!Key) return null;
+      const photoTags = await getPhotoTag(Key);
+      return { Key, LastModified, ETag, Size, tags: photoTags || {} };
     })
   );
-  return contentWithTags;
+  const photos = contentWithTags.filter(
+    (content: any): content is Photo => content && content.Key
+  );
+  // filter not working as type guard, need to cast return value
+  return photos as Array<Photo>;
 };
