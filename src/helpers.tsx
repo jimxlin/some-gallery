@@ -29,11 +29,13 @@ export const randomUnviewedPhoto = (
 };
 
 // randomly get unique tags, with weighted probability
-export const randomTags = (
+export const randomWeightedTags = (
   photos: Array<Photo>,
-  tagCount: number
+  tagCount: number,
+  unviewed: boolean = true
 ): Array<string> => {
-  let tags = allTags(photos, true);
+  let tags = allTags(photos, unviewed);
+  if (tags.length === 0) return [];
   const randomTags = [];
   for (let i = 0; i < tagCount; i++) {
     if (tags.length === 0) return randomTags;

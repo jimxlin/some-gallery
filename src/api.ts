@@ -39,7 +39,8 @@ const getPhotoTag = async (key: string) => {
   );
   return TagSet?.reduce((tags, tag) => {
     if (!tag.Key) return tags;
-    return { ...tags, [tag.Key]: tag.Value };
+    // tag.Value is optional, keep for possible future use
+    return { ...tags, [tag.Key]: tag.Value || true };
   }, {});
 };
 
