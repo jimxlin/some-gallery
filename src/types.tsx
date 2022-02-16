@@ -4,4 +4,5 @@ export interface Photo {
   LastModified?: Date | undefined;
   ETag?: string | undefined;
   Size?: number | undefined;
+  viewed: boolean;
 }

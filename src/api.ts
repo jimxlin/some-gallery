@@ -53,7 +53,14 @@ export const getPhotoList = async (): Promise<Array<Photo> | undefined> => {
       const { Key, LastModified, ETag, Size } = obj;
       if (!Key) return null;
       const photoTags = await getPhotoTag(Key);
-      return { Key, LastModified, ETag, Size, tags: photoTags || {} };
+      return {
+        Key,
+        LastModified,
+        ETag,
+        Size,
+        viewed: false,
+        tags: photoTags || {},
+      };
     })
   );
   const photos = contentWithTags.filter(
