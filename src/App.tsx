@@ -5,16 +5,12 @@ import { Photo } from "./types";
 import { randomUnviewedPhoto, randomWeightedTags } from "./helpers";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import PhotoFrame from "./components/PhotoFrame";
-import About from "./components/About";
+import FrameWrapper from "./components/FrameWrapper";
 import ChoosePhoto from "./components/ChoosePhoto";
 
 function App() {
   const [photos, setPhotos] = useState<Array<Photo> | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
-  const [displayPhoto, setDisplayPhoto] = useState<Photo | undefined>(
-    undefined
-  );
+  const [isInitializing, setIsInitializing] = useState(true);
   const [nextPhotoTags, setNextPhotoTags] = useState<Array<string> | undefined>(
     undefined
   );
@@ -27,9 +23,8 @@ function App() {
   ): Promise<void> => {
     if (!photos) throw new Error("No photos found.");
     const [photo, newPhotos] = randomUnviewedPhoto(photos, tag);
-    setPhotos(newPhotos);
-    setDisplayPhoto(photo);
     const src = await getPhotoSrc(photo.Key);
+    setPhotos(newPhotos);
     setDisplaySrc(src);
   };
 
@@ -50,12 +45,9 @@ function App() {
     if (photos.every((photo: Photo) => photo.viewed)) unviewAllPhotos();
     const loadPhoto = async () => {
       try {
-        setIsLoading(true);
         await showPhoto(photos);
-        setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error");
-        setIsLoading(false);
       }
     };
     loadPhoto();
@@ -69,12 +61,11 @@ function App() {
         const response = await getPhotoList();
         if (!response) throw new Error("No photos found.");
         setPhotos(response);
-        // console.log(photoAry && tagDistribution(photoAry));
         chooseNextPhotoTags(response);
-        setIsLoading(false);
+        setIsInitializing(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error");
-        setIsLoading(false);
+        setIsInitializing(false);
       }
     };
     fetchData();
@@ -91,11 +82,8 @@ function App() {
         minH="80vh"
       >
         {error && <Text color="red.500">{error}</Text>}
-        {isLoading && <Spinner />}
-        {!displayPhoto && <About />}
-        {displayPhoto && displaySrc && !isLoading && (
-          <PhotoFrame imageSrc={displaySrc} />
-        )}
+        {!isInitializing && <FrameWrapper imageSrc={displaySrc} />}
+        {isInitializing && !nextPhotoTags && <Spinner mt="20vh" />}
         {nextPhotoTags && (
           <ChoosePhoto
             nextPhotoTags={nextPhotoTags}
