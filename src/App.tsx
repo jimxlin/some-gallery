@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
-import { VStack, Heading, Text, Image, Spinner, Link } from "@chakra-ui/react";
+import { VStack, Text, Spinner } from "@chakra-ui/react";
 import { getPhotoList, getPhotoSrc } from "./api";
 import { Photo } from "./types";
 import { randomUnviewedPhoto, randomWeightedTags } from "./helpers";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import PhotoFrame from "./components/PhotoFrame";
+import About from "./components/About";
+import ChoosePhoto from "./components/ChoosePhoto";
 
 function App() {
   const [photos, setPhotos] = useState<Array<Photo> | undefined>(undefined);
@@ -65,7 +70,6 @@ function App() {
         if (!response) throw new Error("No photos found.");
         setPhotos(response);
         // console.log(photoAry && tagDistribution(photoAry));
-        showPhoto(response);
         chooseNextPhotoTags(response);
         setIsLoading(false);
       } catch (err) {
@@ -79,22 +83,27 @@ function App() {
 
   return (
     <VStack w="100%" spacing={[2, 6]}>
-      <Heading>Some Photographs</Heading>
-      {error && <Text color="red.500">{error}</Text>}
-      {isLoading && <Spinner />}
-      {displayPhoto && displaySrc && !isLoading && (
-        <>
-          <Image src={displaySrc} width="50vw" />
-          <Text>{displayPhoto.Key}</Text>
-        </>
-      )}
-      {nextPhotoTags && <Text>Show me...</Text>}
-      {nextPhotoTags &&
-        nextPhotoTags.map((tag: string) => (
-          <Text as={Link} key={tag} onClick={() => viewNextPhoto(tag)}>
-            something {tag}
-          </Text>
-        ))}
+      <Header />
+      <VStack
+        mx={4}
+        w={["100%", "100%", "lg", "xl", "2xl"]}
+        px={[2, 2, 0]}
+        minH="80vh"
+      >
+        {error && <Text color="red.500">{error}</Text>}
+        {isLoading && <Spinner />}
+        {!displayPhoto && <About />}
+        {displayPhoto && displaySrc && !isLoading && (
+          <PhotoFrame imageSrc={displaySrc} />
+        )}
+        {nextPhotoTags && (
+          <ChoosePhoto
+            nextPhotoTags={nextPhotoTags}
+            handleViewNextPhoto={viewNextPhoto}
+          />
+        )}
+      </VStack>
+      <Footer />
     </VStack>
   );
 }

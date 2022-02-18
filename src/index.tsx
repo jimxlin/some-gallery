@@ -5,10 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider, extendTheme, ColorModeScript } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
+import "@fontsource/pt-mono";
 
 const theme = extendTheme({
   config: {
     initialColorMode: "light",
+  },
+  fonts: {
+    body: "PT Mono",
   },
   components: {
     Text: {
@@ -16,6 +20,10 @@ const theme = extendTheme({
         color: mode("gray.900", "whiteAlpha.900")(props),
       }),
     },
+  },
+  shadows: {
+    insetLight: "1px -1px 6px 2px rgba(0, 0, 0, 0.08)",
+    outsetLight: "-2px 2px 8px 2px rgba(0, 0, 0, 0.08)",
   },
 });
 
