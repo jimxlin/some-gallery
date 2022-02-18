@@ -61,12 +61,12 @@ function App() {
     // https://www.robinwieruch.de/react-hooks-fetch-data/
     const fetchData = async () => {
       try {
-        const photoAry = await getPhotoList();
-        if (!photoAry) throw new Error("No photos found.");
-        setPhotos(photoAry);
+        const response = await getPhotoList();
+        if (!response) throw new Error("No photos found.");
+        setPhotos(response);
         // console.log(photoAry && tagDistribution(photoAry));
-        showPhoto(photoAry);
-        chooseNextPhotoTags(photoAry);
+        showPhoto(response);
+        chooseNextPhotoTags(response);
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error");
