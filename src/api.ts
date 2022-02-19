@@ -6,6 +6,8 @@ import {
 } from "@aws-sdk/client-s3";
 import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
 import { Photo } from "./types";
+import { ADJECTIVES_TAG } from "./constants";
+import { getAdjectives } from "./helpers";
 
 const s3Client = new S3Client({
   region: process.env.REACT_APP_AWS_REGION,
@@ -30,18 +32,19 @@ export const getPhotoSrc = async (Key: string) => {
   return URL.createObjectURL(blob);
 };
 
-const getPhotoTag = async (key: string) => {
+const getPhotoAdj = async (key: string): Promise<Array<string>> => {
   const { TagSet } = await s3Client.send(
     new GetObjectTaggingCommand({
       Bucket: process.env.REACT_APP_AWS_ACCESS_POINT,
       Key: key,
     })
   );
-  return TagSet?.reduce((tags, tag) => {
-    if (!tag.Key) return tags;
-    // tag.Value is optional, keep for possible future use
-    return { ...tags, [tag.Key]: tag.Value || true };
-  }, {});
+  // return TagSet?.reduce((tags, tag) => {
+  //   if (!tag.Key) return tags;
+  //   return { ...tags, [tag.Key]: tag.Value || true };
+  // }, {});
+  const tag = TagSet?.find((tag) => tag.Key === ADJECTIVES_TAG);
+  return getAdjectives(tag ? tag.Value || "" : "");
 };
 
 export const getPhotoList = async (): Promise<Array<Photo> | undefined> => {
@@ -53,14 +56,14 @@ export const getPhotoList = async (): Promise<Array<Photo> | undefined> => {
     (Contents || []).map(async (obj) => {
       const { Key, LastModified, ETag, Size } = obj;
       if (!Key) return null;
-      const photoTags = await getPhotoTag(Key);
+      const photoTags = await getPhotoAdj(Key);
       return {
         Key,
         LastModified,
         ETag,
         Size,
         viewed: false,
-        tags: photoTags || {},
+        tags: photoTags || [],
       };
     })
   );

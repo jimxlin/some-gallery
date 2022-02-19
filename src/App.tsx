@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { VStack, Text, Spinner, useToast } from "@chakra-ui/react";
+import { VStack, Spinner, useToast } from "@chakra-ui/react";
 import { getPhotoList, getPhotoSrc } from "./api";
 import { Photo } from "./types";
 import { randomUnviewedPhoto, randomWeightedTags } from "./helpers";
@@ -17,22 +17,23 @@ function App() {
   const [displaySrc, setDisplaySrc] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const showPhoto = async (
-    photos: Array<Photo>,
-    tag: string | undefined = undefined
-  ): Promise<void> => {
-    if (!photos) throw new Error("No photos found.");
-    const [photo, newPhotos] = randomUnviewedPhoto(photos, tag);
-    const src = await getPhotoSrc(photo.Key);
-    setPhotos(newPhotos);
-    setDisplaySrc(src);
-  };
+  // const dbg = (): void => {
+  //   console.log(photos?.map((p) => p.viewed));
+  // };
+  // useEffect(dbg, [photos]);
 
-  const unviewAllPhotos = (): void => {
-    if (!photos) return;
-    setPhotos(
-      photos.map((photo: Photo): Photo => ({ ...photo, viewed: false }))
+  const viewedPhotos = (
+    photoAry: Array<Photo>,
+    viewingPhoto: Photo
+  ): Array<Photo> => {
+    const viewedPhotos = photoAry.map((photo: Photo) =>
+      viewingPhoto.Key === photo.Key ? { ...photo, viewed: true } : photo
     );
+    if (viewedPhotos.every((photo: Photo) => photo.viewed))
+      return viewedPhotos.map(
+        (photo: Photo): Photo => ({ ...photo, viewed: false })
+      );
+    return viewedPhotos;
   };
 
   const chooseNextPhotoTags = (photos: Array<Photo>): void => {
@@ -40,12 +41,25 @@ function App() {
     setNextPhotoTags(tags);
   };
 
-  const viewNextPhoto = (tag: string): void => {
+  const getPhoto = async (
+    photos: Array<Photo>,
+    tag: string | undefined = undefined
+  ): Promise<[Photo, string]> => {
+    if (!photos) throw new Error("No photos found.");
+    const photo = randomUnviewedPhoto(photos, tag);
+    const src = await getPhotoSrc(photo.Key);
+    return [photo, src];
+  };
+
+  const viewNextPhoto = (tag: string | undefined = undefined): void => {
     if (!photos) return;
-    if (photos.every((photo: Photo) => photo.viewed)) unviewAllPhotos();
     const loadPhoto = async () => {
       try {
-        await showPhoto(photos);
+        const [nextPhoto, src] = await getPhoto(photos, tag);
+        setDisplaySrc(src);
+        const newPhotos = viewedPhotos(photos, nextPhoto);
+        setPhotos(newPhotos);
+        chooseNextPhotoTags(newPhotos);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error");
       }
