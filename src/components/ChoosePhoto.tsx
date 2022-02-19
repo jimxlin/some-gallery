@@ -1,19 +1,29 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { VStack, HStack, Text, Link } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   nextPhotoTags: Array<string>;
-  handleViewNextPhoto: (tag: string) => void;
+  handleViewNextPhoto: (tag: string | undefined) => void;
 };
 function ChoosePhoto({ nextPhotoTags, handleViewNextPhoto }: Props) {
   const [disableNext, setDisableNext] = useState(false);
-  const handleClick = (tag: string) => {
+
+  const handleClick = (tag: string | undefined = undefined) => {
     if (disableNext) return;
     handleViewNextPhoto(tag);
     setDisableNext(true);
     setTimeout(() => setDisableNext(false), 3000);
   };
+
+  const tagList = (tag: string, index: number) => (
+    <Fragment key={tag}>
+      <Text as={Link} onClick={() => handleClick(tag)}>
+        {tag}
+      </Text>
+      {index !== nextPhotoTags.length - 1 && <Text>,</Text>}
+    </Fragment>
+  );
 
   return (
     <VStack w="100%" py={4} justify="center">
@@ -27,12 +37,13 @@ function ChoosePhoto({ nextPhotoTags, handleViewNextPhoto }: Props) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {nextPhotoTags.map((tag: string, index: number) => (
-                <Text as={Link} key={tag} onClick={() => handleClick(tag)}>
-                  {tag}
-                  {index !== nextPhotoTags.length - 1 ? ", " : ""}
+              {nextPhotoTags.length > 0 ? (
+                <HStack spacing={1}>{nextPhotoTags.map(tagList)}</HStack>
+              ) : (
+                <Text as={Link} onClick={() => handleClick()}>
+                  random
                 </Text>
-              ))}
+              )}
             </motion.div>
           )}
         </AnimatePresence>

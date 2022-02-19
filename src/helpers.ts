@@ -3,6 +3,9 @@ import { Photo } from "./types";
 const randEl = (array: Array<any>): any =>
   array[Math.floor(Math.random() * array.length)];
 
+export const getAdjectives = (adjectives: string): Array<string> =>
+  adjectives.trim().split(/\s+/);
+
 const allTags = (
   photos: Array<Photo>,
   unviewed: boolean = false
@@ -10,16 +13,21 @@ const allTags = (
   const filtered = unviewed
     ? photos.filter((photo: Photo) => !photo.viewed)
     : photos;
-  return filtered.flatMap((photo: Photo) => Object.keys(photo.tags));
+  const tags = filtered.flatMap((photo: Photo) => photo.tags);
+  return tags.filter((tag: string) => tag !== "");
 };
 
 export const randomUnviewedPhoto = (
   photos: Array<Photo>,
-  tag: undefined | string = undefined
+  selectedTag: undefined | string = undefined
 ): [Photo, Array<Photo>] => {
   const displayPhoto = randEl(
     photos.filter(
-      (photo: Photo) => !photo.viewed && (tag ? photo.tags[tag] : true)
+      (photo: Photo) =>
+        !photo.viewed &&
+        (selectedTag
+          ? photo.tags.some((tag: string) => tag === selectedTag)
+          : true)
     )
   );
   const updatedPhotos = photos.map((photo: Photo) =>

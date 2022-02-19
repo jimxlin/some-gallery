@@ -1,6 +1,6 @@
 export interface Photo {
   Key: string;
-  tags: any;
+  tags: Array<string>;
   LastModified?: Date | undefined;
   ETag?: string | undefined;
   Size?: number | undefined;
