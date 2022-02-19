@@ -33,6 +33,20 @@ export const randomUnviewedPhoto = (
   return displayPhoto;
 };
 
+export const viewedPhotos = (
+  photoAry: Array<Photo>,
+  viewingPhoto: Photo
+): Array<Photo> => {
+  const viewedPhotos = photoAry.map((photo: Photo) =>
+    viewingPhoto.Key === photo.Key ? { ...photo, viewed: true } : photo
+  );
+  if (viewedPhotos.every((photo: Photo) => photo.viewed))
+    return viewedPhotos.map(
+      (photo: Photo): Photo => ({ ...photo, viewed: false })
+    );
+  return viewedPhotos;
+};
+
 // randomly get unique tags, with weighted probability
 export const randomWeightedTags = (
   photos: Array<Photo>,
@@ -50,9 +64,3 @@ export const randomWeightedTags = (
   }
   return randomTags;
 };
-
-export const tagDistribution = (photos: Array<Photo>) =>
-  allTags(photos).reduce((dist: any, tag: string) => {
-    if (dist[tag] === undefined) return { ...dist, [tag]: 0 };
-    return { ...dist, [tag]: dist[tag] + 1 };
-  }, {});

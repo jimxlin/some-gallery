@@ -39,10 +39,6 @@ const getPhotoAdj = async (key: string): Promise<Array<string>> => {
       Key: key,
     })
   );
-  // return TagSet?.reduce((tags, tag) => {
-  //   if (!tag.Key) return tags;
-  //   return { ...tags, [tag.Key]: tag.Value || true };
-  // }, {});
   const tag = TagSet?.find((tag) => tag.Key === ADJECTIVES_TAG);
   return getAdjectives(tag ? tag.Value || "" : "");
 };

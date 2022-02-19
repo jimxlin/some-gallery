@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { VStack, Spinner, useToast } from "@chakra-ui/react";
 import { getPhotoList, getPhotoSrc } from "./api";
 import { Photo } from "./types";
-import { randomUnviewedPhoto, randomWeightedTags } from "./helpers";
+import { viewedPhotos, randomUnviewedPhoto, randomWeightedTags } from "./helpers";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import FrameWrapper from "./components/FrameWrapper";
@@ -21,20 +21,6 @@ function App() {
   //   console.log(photos?.map((p) => p.viewed));
   // };
   // useEffect(dbg, [photos]);
-
-  const viewedPhotos = (
-    photoAry: Array<Photo>,
-    viewingPhoto: Photo
-  ): Array<Photo> => {
-    const viewedPhotos = photoAry.map((photo: Photo) =>
-      viewingPhoto.Key === photo.Key ? { ...photo, viewed: true } : photo
-    );
-    if (viewedPhotos.every((photo: Photo) => photo.viewed))
-      return viewedPhotos.map(
-        (photo: Photo): Photo => ({ ...photo, viewed: false })
-      );
-    return viewedPhotos;
-  };
 
   const chooseNextPhotoTags = (photos: Array<Photo>): void => {
     const tags = randomWeightedTags(photos, 3);
