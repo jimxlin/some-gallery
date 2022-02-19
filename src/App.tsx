@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { VStack, Text, Spinner } from "@chakra-ui/react";
+import { VStack, Text, Spinner, useToast } from "@chakra-ui/react";
 import { getPhotoList, getPhotoSrc } from "./api";
 import { Photo } from "./types";
 import { randomUnviewedPhoto, randomWeightedTags } from "./helpers";
@@ -53,6 +53,18 @@ function App() {
     loadPhoto();
   };
 
+  const errorToast = useToast();
+  useEffect(() => {
+    if (!error) return;
+    errorToast({
+      position: "top",
+      description: error,
+      status: "error",
+      duration: 20000,
+      isClosable: true,
+    });
+  }, [error, errorToast]);
+
   const initialize = (): void => {
     setError(undefined);
     // https://www.robinwieruch.de/react-hooks-fetch-data/
@@ -81,7 +93,6 @@ function App() {
         px={[2, 2, 0]}
         minH="80vh"
       >
-        {error && <Text color="red.500">{error}</Text>}
         {!isInitializing && <FrameWrapper imageSrc={displaySrc} />}
         {isInitializing && !nextPhotoTags && <Spinner mt="20vh" />}
         {nextPhotoTags && (
