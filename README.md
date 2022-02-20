@@ -7,6 +7,7 @@ Photo gallery using S3 and S3 object tags.
 - [Create React App](https://create-react-app.dev/)
 - [Chakra UI](https://chakra-ui.com/)
 - [Amazon Simple Storage Service](https://aws.amazon.com/s3/)
+- [Framer Motion](https://www.framer.com/motion/)
 
 ## Setup
 
