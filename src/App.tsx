@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { VStack, Spinner, useToast } from "@chakra-ui/react";
 import { getPhotoList, getPhotoSrc } from "./api";
 import { Photo } from "./types";
-import { viewedPhotos, randomUnviewedPhoto, randomWeightedTags } from "./helpers";
+import {
+  viewedPhotos,
+  randomUnviewedPhoto,
+  randomWeightedTags,
+} from "./helpers";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import FrameWrapper from "./components/FrameWrapper";
