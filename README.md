@@ -17,18 +17,12 @@ This app makes use of S3 buckets, object tagging, access points, and identity po
 2. Go the the bucket permissions tab and enter in the `CORS` section:
    ```json
    [
-       {
-           "AllowedHeaders": [
-               "*"
-           ],
-           "AllowedMethods": [
-               "GET"
-           ],
-           "AllowedOrigins": [
-               "*"
-           ],
-           "ExposeHeaders": []
-       }
+     {
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": ["GET"],
+       "AllowedOrigins": ["*"],
+       "ExposeHeaders": []
+     }
    ]
    ```
 3. Create an [access point](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points.html) for the bucket.
