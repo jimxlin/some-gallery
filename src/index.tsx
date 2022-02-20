@@ -11,19 +11,28 @@ const theme = extendTheme({
   config: {
     initialColorMode: "light",
   },
+  styles: {
+    global: (props: any) => ({
+      body: {
+        bg: mode("white", "black")(props),
+      },
+    }),
+  },
   fonts: {
     body: "PT Mono",
   },
   components: {
     Text: {
       baseStyle: (props: any) => ({
-        color: mode("gray.900", "whiteAlpha.900")(props),
+        color: mode("gray.900", "gray.300")(props),
       }),
     },
   },
   shadows: {
     insetLight: "1px -1px 6px 2px rgba(0, 0, 0, 0.08)",
+    insetDark: "0 0 8px 4px rgba(255, 255, 255, 0.2)",
     outsetLight: "-2px 2px 8px 2px rgba(0, 0, 0, 0.08)",
+    outsetDark: "0 0 12px 2px rgba(255, 255, 255, 0.2)",
   },
 });
 
