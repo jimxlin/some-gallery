@@ -1,6 +1,6 @@
 # Some Gallery
 
-Photo gallery using S3 and S3 object tags. Hosted [here](https://photo.jimxlin.com).
+Photo gallery using S3 and S3 object tags, hosted [here](https://photo.jimxlin.com).
 
 ## Built With
 
@@ -27,7 +27,7 @@ This app makes use of S3 buckets, object tagging, access points, and identity po
            "AllowedOrigins": [
                "*"
            ],
-           ExposeHeaders": []
+           "ExposeHeaders": []
        }
    ]
    ```
