@@ -46,6 +46,7 @@ function App() {
     const loadPhoto = async () => {
       try {
         const [nextPhoto, src] = await getPhoto(photos, tag);
+        URL.revokeObjectURL(displaySrc || ""); // release image from memory
         setDisplaySrc(src);
         const newPhotos = viewedPhotos(photos, nextPhoto);
         setPhotos(newPhotos);
