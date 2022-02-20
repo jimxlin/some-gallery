@@ -1,4 +1,4 @@
-import { Circle, Icon, useColorMode, Link } from "@chakra-ui/react";
+import { Circle, Icon, useColorMode } from "@chakra-ui/react";
 import { FaRegSun, FaRegMoon } from "react-icons/fa";
 
 function ChooseColorMode() {
