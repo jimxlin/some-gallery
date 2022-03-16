@@ -10,7 +10,7 @@ function Footer() {
           <Text>Source</Text>
         </HStack>
       </Link>
-      <Link isExternal href="https://www.instagram.com/linshaw.cheen/">
+      <Link isExternal href="https://www.instagram.com/jimxlin/">
         <HStack>
           <Icon as={FaInstagram} />
           <Text>Instagram</Text>
